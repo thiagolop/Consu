@@ -3,6 +3,8 @@ import 'package:flutter_application_2/controllers/movie_controller.dart';
 import 'package:flutter_application_2/models/movie_model.dart';
 import 'package:flutter_application_2/repositories/movies_repository_imp.dart';
 import 'package:flutter_application_2/service/dio_service_imp.dart';
+import 'package:flutter_application_2/shared/movies_provider.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -16,22 +18,19 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _moviecontroller.fetch();
+    _moviecontroller.fetch(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: ValueListenableBuilder<Movies?>(
-      valueListenable: _moviecontroller.movies,
+    return Consumer<MoviesProvidies>(
       builder: (_, movies, __) {
-        return movies != null
-            ? ListView.builder(
-                itemCount: movies.items.length,
-                itemBuilder: (_, index) => Text(movies.items[index].title),
-              )
-            : const Center(child: Text('Erro'));
+        return Scaffold(
+            body: ListView.builder(
+                    itemCount: movies.movies?.items.length,
+                    itemBuilder: (_, index) => Text(movies.movies!.items[index].title),
+                  ));
       },
-    ));
+    );
   }
 }
